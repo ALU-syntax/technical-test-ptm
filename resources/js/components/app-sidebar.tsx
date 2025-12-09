@@ -26,6 +26,7 @@ import {
 
 import { ChevronDown, LayoutGrid, BookOpen, Folder } from "lucide-react";
 import AppLogo from "./app-logo";
+import { canRead, normalizePath, toHref } from "@/lib/utils";
 
 type SubMenu = {
     name: string;
@@ -48,15 +49,6 @@ type PageProps = {
     menus?: MenusByCategory;
 };
 
-function normalizePath(input: string) {
-    const noQuery = (input ?? "").split("?")[0] ?? "";
-    return noQuery.replace(/^\/+/, "").replace(/\/+$/, "");
-}
-
-function toHref(url: string) {
-    const p = normalizePath(url);
-    return p ? `/${p}` : "/";
-}
 
 function isActive(currentUrl: string, targetUrl: string) {
     const cur = normalizePath(currentUrl);
@@ -64,12 +56,6 @@ function isActive(currentUrl: string, targetUrl: string) {
     if (!target) return false;
     // mirip str_contains(request()->path(), $mm->url)
     return cur.includes(target);
-}
-
-function canRead(permissions: string[], url: string) {
-    // mengikuti Blade: @can('read ' . $mm->url)
-    const perm = `read ${normalizePath(url)}`;
-    return permissions.includes(perm);
 }
 
 const mainNavItems: NavItem[] = [
