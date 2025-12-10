@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,12 +27,12 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $model = $this->modelClass;
-        $query = $model::query()->with('role')->where('email', '!=', "superadmin@gmail.com");
+        $query = $model::query()->with(['role', 'company'])->where('email', '!=', "superadmin@gmail.com");
 
         if ($request->filled('search')) {
             $search = $request->get('search');
-            $query->where('name', 'ilike', "%{$search}%");
-            $query->orWhere('email', 'ilike', "%{$search}%");
+            $query->where('name', 'like', "%{$search}%");
+            $query->orWhere('email', 'like', "%{$search}%");
         }
 
         $perPage = (int) $request->get('per_page', 10);
@@ -48,6 +49,8 @@ class UserController extends Controller
                 'email'      => $row->email,
                 'role_name'  => $row->roles[0]->name ?? 'N/A',
                 'role_id'    => $row->roles[0]->id ?? 'N/A',
+                'company_id' => $row->company_id ?? null,
+                'company_name' => $row->company ? $row->company->name : '-' ,
                 'updateUrl'  => route($this->updateRoute, $row->id),
                 'destroyUrl' => route($this->destroyRoute, $row->id),
             ];
@@ -66,9 +69,10 @@ class UserController extends Controller
             ],
             'filters'   => $request->only(['search','status']),
             'createUrl' => route($this->indexRoute),
-            'roles' => Role::where('name', '<>', 'Superadmin')
+            'roles' => Role::where('name', '<>', 'Super Admin')
                ->orderBy('name')
-               ->get(['id', 'name']),
+               ->get(['id', 'name', 'has_company']),
+            'companys' => Company::select(['id', 'name'])->get(),
         ]);
     }
 
@@ -79,7 +83,7 @@ class UserController extends Controller
             'email'       => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password'    => ['required', 'string', 'min:8', 'confirmed'],
             'role_id'     => 'required',
-            'organization_id' => ['nullable','exists:organizations,id'],
+            'company_id' => ['nullable'],
         ]);
 
         $data['password'] = bcrypt($data['password']);
@@ -89,13 +93,34 @@ class UserController extends Controller
         $role = Role::findById($data['role_id']);
         $item = $model::create($data);
         $item->assignRole($role->name);
-        // if (!empty($data['organization_id'])) {
-        //    UserOrganization::create([
-        //         'user_id'         => $item->id,
-        //         'organization_id' => $data['organization_id'],
-        //     ]);
-        // }
 
         return back()->with(['success' => $this->moduleName . ' telah dibuat.']);
+    }
+
+    public function update(Request $request, $id){
+        $data = $request->validate([
+            'name'        => ['required', 'string', 'max:255'],
+            'email'       => ['sometimes', 'required', 'string', 'email', 'max:255', "unique:users,email,{$id}"],
+            'password'    => ['nullable', 'string', 'min:8', 'confirmed'],
+            'role_id'     => 'required',
+            'company_id' => ['nullable'],
+        ]);
+
+        $model = $this->modelClass;
+        $item  = $model::findOrFail($id);
+
+        $item->update($data);
+
+        return back()->with(['success' => $this->moduleName . ' telah diperbarui.']);
+    }
+
+    public function destroy($id)
+    {
+        $model = $this->modelClass;
+        $item  = $model::findOrFail($id);
+
+        $item->delete();
+
+        return back()->with(['success' => $this->moduleName . ' telah dihapus.']);
     }
 }

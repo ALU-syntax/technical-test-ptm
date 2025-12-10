@@ -72,11 +72,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::group(['prefix' => 'account', 'as' => 'account.'], function(){
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('users');
-            Route::get('/create', [UserController::class, 'create'])->name('users.create');
-            Route::get('/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
-            Route::post('/store', [UserController::class, 'store'])->name('users.store');
-            Route::post('/update/{id}', [UserController::class, 'update'])->name('users.update');
-            Route::post('/destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+            Route::post('/', [UserController::class, 'store'])->name('users');
+            Route::put('/update/{id}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('/destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
         });
 
         Route::prefix('roles')->group(function(){

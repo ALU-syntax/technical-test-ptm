@@ -69,10 +69,10 @@ interface Props {
   filters: { search?: string; status?: string, per_page?: string };
   createUrl: string;
   roles: any[];
-  organizations: any[];
+  companys: any[];
 }
 
-export default function Index({ items, filters, createUrl, roles, organizations }: Props) {
+export default function Index({ items, filters, createUrl, roles, companys }: Props) {
   const [query, setQuery]   = useState(filters.search || "");
   const [status, setStatus] = useState(filters.status || "");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -190,6 +190,7 @@ export default function Index({ items, filters, createUrl, roles, organizations 
                     <TableHead>Nama</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
+                    <TableHead>Perusahaan</TableHead>
                     <TableHead>Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -206,6 +207,7 @@ export default function Index({ items, filters, createUrl, roles, organizations 
                         <TableCell className="font-medium">{item.name}</TableCell>
                         <TableCell className="font-medium">{item.email}</TableCell>
                         <TableCell className="font-medium">{item.role_name}</TableCell>
+                        <TableCell className="font-medium">{item.company_name}</TableCell>
                         <TableCell>
                           <div className="flex gap-2">
                             <Tooltip>
@@ -304,7 +306,7 @@ export default function Index({ items, filters, createUrl, roles, organizations 
         mode="create"
         submitUrl={createUrl}
         roles={roles}
-        organizations={organizations}
+        companys={companys}
       />
 
       <FormModal
@@ -316,7 +318,7 @@ export default function Index({ items, filters, createUrl, roles, organizations 
         initialData={selectedItem}
         submitUrl={selectedItem?.updateUrl || ""}
         roles={roles}
-        organizations={organizations}
+        companys={companys}
       />
 
       <DeleteConfirmationDialog

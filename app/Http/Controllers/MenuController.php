@@ -38,7 +38,7 @@ class MenuController extends Controller
         if ($request->filled('search')) {
             $search = $request->get('search');
              $query->where(function($q) use ($search) {
-                $q->where('name', 'ilike', "%{$search}%");
+                $q->where('name', 'like', "%{$search}%");
             });
         }
 
