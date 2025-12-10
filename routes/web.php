@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -17,6 +18,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+
+    Route::group(['prefix' => 'library', 'as' => 'library.'], function () {
+
+        Route::prefix('company')->group(function(){
+            Route::get('/', [CompanyController::class, 'index'])->name('company');
+            Route::post('/', [CompanyController::class, 'store'])->name('company');
+            Route::get('/edit/{id}', [CompanyController::class, 'edit'])->name('company.edit');
+            Route::put('/update/{id}', [CompanyController::class, 'update'])->name('company.update');
+            Route::delete('/{id}/destroy', [CompanyController::class, 'destroy'])->name('company.destroy');
+        });
+    });
 
     Route::group(['prefix' => 'konfigurasi', 'as' => 'konfigurasi/'], function () {
 

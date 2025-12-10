@@ -42,12 +42,12 @@ import { DeleteConfirmationDialog } from "@/components/delete-confirmation-dialo
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Dashboard", href: "/dashboard" },
-  { title: "Roles", href: "/roles" },
+  { title: "Company", href: "/Company" },
 ];
 
-const moduleName = "Roles";
-const moduleTitle = "Manajemen Roles";
-const moduleSubTitle = "Kelola Role dan datanya";
+const moduleName = "Company";
+const moduleTitle = "Manajemen Company";
+const moduleSubTitle = "Kelola Company dan datanya";
 
 interface PaginationData<T = any> {
   current_page: number;
@@ -81,6 +81,7 @@ export default function Index({ items, filters, createUrl }: Props) {
   const [perPage, setPerPage] = useState<number>(filters.per_page ? Number(filters.per_page) : 10);
   const [_, setPage] = useState(1);
 
+  console.log(items)
   useEffect(() => {
     const id = setTimeout(() => {
       setPage(1);
@@ -93,7 +94,6 @@ export default function Index({ items, filters, createUrl }: Props) {
   }, [query, status, createUrl]);
 
   const handleEdit = (item: any) => {
-    // console.log(item)
     setSelectedItem(item);
     setIsEditOpen(true);
   };
@@ -188,7 +188,7 @@ export default function Index({ items, filters, createUrl }: Props) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nama</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Address</TableHead>
                     <TableHead>Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -203,7 +203,7 @@ export default function Index({ items, filters, createUrl }: Props) {
                     items.data.map((item) => (
                       <TableRow key={item.id}>
                         <TableCell className="font-medium">{item.name}</TableCell>
-                        <TableCell className="font-medium">{item.status == "1" ? "Aktif" : "Tidak Aktif"}</TableCell>
+                        <TableCell className="font-medium">{item.address == "" || item.address == null ? "-" : item.address}</TableCell>
                         <TableCell>
                           <div className="flex gap-2">
                             <Tooltip>

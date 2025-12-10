@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class RoleController extends Controller
+class CompanyController extends Controller
 {
-    protected string $moduleName = "Role";
+    protected string $moduleName = "Company";
     protected string $modelClass;
     protected string $routePrefix;
-    protected string $storeRoute = 'account.roles';
-    protected string $updateRoute = 'account.roles.update';
-    protected string $destroyRoute = 'account.roles.destroy';
-    protected string $viewSource = 'roles/index';
+    protected string $storeRoute = 'library.company';
+    protected string $updateRoute = 'library.company.update';
+    protected string $destroyRoute = 'library.company.destroy';
+    protected string $viewSource = 'company/index';
     public function __construct()
     {
-        $this->modelClass = Role::class;
+        $this->modelClass = Company::class;
     }
     public function index(Request $request)
     {
@@ -40,8 +40,7 @@ class RoleController extends Controller
             return [
                 'id'         => $row->id,
                 'name'       => $row->name,
-                'status'     => $row->status,
-                'has_company'=> $row->has_company,
+                'address'    => $row->address,
                 'updateUrl'  => route($this->updateRoute, $row->id),
                 'destroyUrl' => route($this->destroyRoute, $row->id),
             ];
@@ -59,52 +58,41 @@ class RoleController extends Controller
                 'links'        => $data->links(),
             ],
             'filters'   => $request->only(['search','status']),
-            'createUrl' => route($this->storeRoute),
-            'roles' => Role::where('name', '<>', 'Super Admin')
-               ->orderBy('name')
-               ->get(['id', 'name']),
+            'createUrl' => route($this->storeRoute)
         ]);
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'status'       => ['required'],
-            'has_company' => ['required', 'boolean'],
-        ]);
-
-        $data['guard_name'] = 'web';
-        $model = $this->modelClass;
-        $model::create($data);
-
-        return back()->with(['success' => $this->moduleName . ' telah dibuat.']);
-    }
-
-    public function update(Request $request, $id)
-    {
-       $data = $request->validate([
-            'name'        => ['sometimes', 'required', 'string', 'max:255'],
-            'status'      => ['sometimes', 'required'],
-            'has_company' => ['sometimes', 'required', 'boolean'],
+        $validated = $request->validate([
+            'name'    => 'required|string|max:255',
+            'address' => 'nullable|string|max:500',
         ]);
 
         $model = $this->modelClass;
-        $item  = $model::findOrFail($id);
+        $model::create($validated);
 
-        $item->update($data);
-
-        return back()->with(['success' => $this->moduleName . ' telah diperbarui.']);
+        return back()->with('success', "{$this->moduleName} telah dibuat.");
     }
 
-    public function destroy($id)
-    {
-        $model = $this->modelClass;
-        $item  = $model::findOrFail($id);
+    public function update(Request $request, $id){
+        $validated = $request->validate([
+            'name'    => 'required|string|max:255',
+            'address' => 'nullable|string|max:500',
+        ]);
 
+        $model = $this->modelClass;
+        $item = $model::findOrFail($id);
+        $item->update($validated);
+
+        return back()->with('success', "{$this->moduleName} telah diperbarui.");
+    }
+
+    public function destroy($id){
+        $model = $this->modelClass;
+        $item = $model::findOrFail($id);
         $item->delete();
 
-        return back()->with(['success' => $this->moduleName . ' telah dihapus.']);
+        return back()->with('success', "{$this->moduleName} telah dihapus.");
     }
-
 }

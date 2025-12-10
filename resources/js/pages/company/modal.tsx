@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Props<T = any> {
     isOpen: boolean;
@@ -26,26 +27,20 @@ interface Props<T = any> {
     submitUrl: string;
 }
 
-const moduleName = "Roles";
-
 export function FormModal({ isOpen, onClose, mode, initialData, submitUrl }: Props) {
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm<{
         name: string;
-        status: boolean;
-        has_company: boolean;
+        address: string;
     }>({
         name: "",
-        status: true,
-        has_company: false,
+        address: "",
     });
 
     useEffect(() => {
-        console.log(data);
         if (mode === "edit" && initialData) {
             setData({
                 name: initialData.name,
-                status: initialData.status,
-                has_company: initialData.has_company === 1 ? true : false,
+                address: initialData.address,
             });
         } else if (mode === "create") {
             reset();
@@ -104,27 +99,9 @@ export function FormModal({ isOpen, onClose, mode, initialData, submitUrl }: Pro
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="status">Status</Label>
-                        <Select value={data.status ? "1" : "0"}
-                        onValueChange={(value) => setData("status", value === "1")}>
-                            <SelectTrigger >
-                                <SelectValue placeholder="Select Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectItem value="1">Aktif</SelectItem>
-                                    <SelectItem value="0">Tidak Aktif</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                        {errors.status && <p className="text-sm text-red-500">{errors.status}</p>}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <Checkbox id="has_company"
-                            checked={data.has_company}
-                            onCheckedChange={(checked) => setData("has_company", checked === true)}/>
-                        <Label htmlFor="has_company">Role Wajib memiliki Company</Label>
+                        <Label htmlFor="address">Address</Label>
+                        <Textarea placeholder="Masukan alamat" id="address" name="address" value={data.address} onChange={(e) => setData("address", e.target.value)}></Textarea>
+                        {errors.address && <p className="text-sm text-red-500">{errors.address}</p>}
                     </div>
 
                     <DialogFooter className="flex justify-end gap-2">

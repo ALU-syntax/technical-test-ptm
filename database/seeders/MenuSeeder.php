@@ -24,7 +24,7 @@ class MenuSeeder extends Seeder
         $mm = Menu::firstOrCreate(['url' => 'library'], ['name' => 'Library', 'category' => 'LIBRARY', 'icon' => 'fa-book']);
         $this->attachMenuPermission($mm, null, ['Super Admin']);
 
-        $sm = $mm->subMenus()->create(['name' => 'Category', 'url' => $mm->url . '/category', 'category' => $mm->category]);
+        $sm = $mm->subMenus()->create(['name' => 'Company', 'url' => $mm->url . '/company', 'category' => $mm->category]);
         $this->attachMenuPermission($sm, null, ['Super Admin']);
 
         // END LIBRARY
