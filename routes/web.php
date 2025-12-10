@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryKebutuhanController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\KebutuhanController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -36,6 +37,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/edit/{id}', [CategoryKebutuhanController::class, 'edit'])->name('category-kebutuhan.edit');
             Route::put('/update/{id}', [CategoryKebutuhanController::class, 'update'])->name('category-kebutuhan.update');
             Route::delete('/{id}/destroy', [CategoryKebutuhanController::class, 'destroy'])->name('category-kebutuhan.destroy');
+        });
+
+        Route::prefix('kebutuhan')->group(function(){
+            Route::get('/', [KebutuhanController::class, 'index'])->name('kebutuhan');
+            Route::post('/', [KebutuhanController::class, 'store'])->name('kebutuhan');
+            Route::put('/update/{id}', [KebutuhanController::class, 'update'])->name('kebutuhan.update');
+            Route::delete('/{id}/destroy', [KebutuhanController::class, 'destroy'])->name('kebutuhan.destroy');
         });
     });
 

@@ -30,6 +30,9 @@ class MenuSeeder extends Seeder
         $sm = $mm->subMenus()->create(['name' => 'Category Kebutuhan', 'url' => $mm->url . '/category-kebutuhan', 'category' => $mm->category]);
         $this->attachMenuPermission($sm, null, ['Super Admin']);
 
+        $sm = $mm->subMenus()->create(['name' => 'Kebutuhan', 'url' => $mm->url . '/kebutuhan', 'category' => $mm->category]);
+        $this->attachMenuPermission($sm, null, ['Super Admin']);
+
         // END LIBRARY
 
         // ACCOUNT
