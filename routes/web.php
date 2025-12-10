@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryKebutuhanController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
@@ -27,6 +28,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/edit/{id}', [CompanyController::class, 'edit'])->name('company.edit');
             Route::put('/update/{id}', [CompanyController::class, 'update'])->name('company.update');
             Route::delete('/{id}/destroy', [CompanyController::class, 'destroy'])->name('company.destroy');
+        });
+
+        Route::prefix('category-kebutuhan')->group(function(){
+            Route::get('/', [CategoryKebutuhanController::class, 'index'])->name('category-kebutuhan');
+            Route::post('/', [CategoryKebutuhanController::class, 'store'])->name('category-kebutuhan');
+            Route::get('/edit/{id}', [CategoryKebutuhanController::class, 'edit'])->name('category-kebutuhan.edit');
+            Route::put('/update/{id}', [CategoryKebutuhanController::class, 'update'])->name('category-kebutuhan.update');
+            Route::delete('/{id}/destroy', [CategoryKebutuhanController::class, 'destroy'])->name('category-kebutuhan.destroy');
         });
     });
 
